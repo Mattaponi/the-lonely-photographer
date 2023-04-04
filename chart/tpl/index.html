@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>datashow</title>
+</head>
+<body>
+
+<script src="jquery.min.2.0.js"></script>
+<script src="echarts.min.js"></script>
+
+<div id="chartDom" calse="chart" style="width: 300px;height:200px;margin-left: 10px"></div>
+
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartDom'));
+
+	const render = async () => {
+		var curved = await window.curve();
+		var cdobj = jQuery.parseJSON(curved)
+		console.log(cdobj)
+		SetOption(myChart, cdobj);
+	};
+
+	function SetOption(chart, curved){
+		xa = []
+		curved.data.forEach(p=>function(item,idx){
+			xa.push(idx+1)
+		})
+		// 指定图表的配置项和数据
+	    var option = {
+	        title: {
+	            text: curved.title
+	        },
+	        grid:{
+	        	left: '40',
+	        	right: '40',
+	        	show: true,
+	        },
+	        tooltip:{},
+	        legend: {
+	            data:[curved.title]
+	        },
+	        xAxis: {
+	            data: xa
+	        },
+	        yAxis: {
+	        	"scale": true,
+	        },
+	        series: [{
+	            name: '-',
+	            // type: 'line',
+	            // type: 'scatter',
+	            type: 'bar',
+	            barWidth: 2,
+	            data: curved.data,
+	            markPoint:{
+	            	data: [{
+	            		type:'max'
+		            },
+		            {
+	            		type:'min'
+		            }]
+	            },
+	            markLine : {
+	              	symbol: 'none',
+		　　　　　　　data : [
+		　　　　　　　　	{type : 'average', name: '平均值'}
+		　　　　　　],
+					lineStyle:{
+						color:"green"
+					}
+		　　　　}
+	        }]
+	    };
+
+	    console.log(option);
+	    // 使用刚指定的配置项和数据显示图表。
+	    myChart.setOption(option);
+	}
+
+	render();
+    </script>
+</body>
+</html>
